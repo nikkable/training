@@ -17,7 +17,11 @@ RUN apt-get update && \
         libgmp-dev \
         libwebp-dev \
         libxml2-dev \
-        && rm -rf /var/lib/apt/lists/*
+        librdkafka-dev && \
+        rm -rf /var/lib/apt/lists/*
+
+RUN pecl install rdkafka && \
+    docker-php-ext-enable rdkafka
 
 RUN docker-php-ext-install pdo_mysql opcache bcmath gd exif pcntl zip gmp intl mbstring soap
 

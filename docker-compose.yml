@@ -16,6 +16,28 @@ services:
     ports:
       - "3306:3306"
 
+  # Kafka
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - kafka_data:/bitnami/kafka
+    depends_on:
+      - mysql
+
   # Laravel API
   backend:
     build:
@@ -33,12 +55,15 @@ services:
       APP_URL: ${APP_URL}
       APP_DEBUG: ${APP_DEBUG}
       APP_ENV: ${APP_ENV}
+
+      KAFKA_BROKERS: kafka:9092
     volumes:
       - ./backend:/var/www/html
     ports:
       - "8000:80"
     depends_on:
       - mysql
+      - kafka
 
   # Nuxt.js
   frontend:
@@ -56,3 +81,4 @@ services:
 
 volumes:
   dbdata:
+  kafka_data:
