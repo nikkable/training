@@ -49,6 +49,39 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async register(form) {
+      try {
+        const config = useRuntimeConfig();
+
+        if (typeof window === 'undefined') {
+          throw new Error('Register must be performed on client side');
+        }
+
+        const response = await fetch(`${config.public.apiBase}/api/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form),
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Register failed');
+        }
+
+        const data = await response.json();
+        this.accessToken = data.access_token;
+        localStorage.setItem('access_token', data.access_token);
+
+        await this.fetchUserProfile();
+      } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+      }
+    },
+
     async fetchUserProfile() {
       try {
         const config = useRuntimeConfig();
