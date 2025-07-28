@@ -41,7 +41,7 @@ const authStore = useAuthStore();
 const register = async () => {
   errorMessage.value = null;
   try {
-    await authStore.login(form.value.email, form.value.password);
+    await authStore.register(form.value);
     router.push('/profile');
   } catch (err) {
     errorMessage.value = err.message;
