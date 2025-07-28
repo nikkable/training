@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Services\Wilberries\WilberriesParser;
+use App\Http\Controllers\KafkaTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,8 @@ use App\Services\Wilberries\WilberriesParser;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::get('/send-kafka-message', [KafkaTestController::class, 'sendMessage']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

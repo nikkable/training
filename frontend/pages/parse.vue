@@ -17,6 +17,8 @@
         </div>
 
         <button class="form__button" @click="fetchParsing">Начать парсинг</button>
+        <br>
+        <button class="form__button" @click="fetchKafka">Test kafka</button>
       </div>
     </div>
   </div>
@@ -45,6 +47,16 @@ const fetchParsing = async () => {
 
     products.value = data.data;
     console.log('Данные получены:', data);
+  } catch (error) {
+    console.error('Ошибка при получении данных:', error);
+  }
+};
+
+const fetchKafka = async () => {
+  try {
+    await $apiFetch('/api/send-kafka-message', {
+      method: 'GET',
+    } );
   } catch (error) {
     console.error('Ошибка при получении данных:', error);
   }
