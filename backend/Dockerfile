@@ -27,10 +27,12 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 RUN php artisan key:generate || true
 RUN php artisan config:clear && php artisan cache:clear
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
+RUN chown -R www-data:www-data /var/www/html \
+    && find /var/www/html -type f -exec chmod 664 {} \; \
+    && find /var/www/html -type d -exec chmod 775 {} \; \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
+
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 EXPOSE 80

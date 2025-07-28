@@ -1,9 +1,9 @@
-FROM node:20-alpine
+FROM node:20
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN rm -rf node_modules && npm install --prefer-offline --no-audit
+RUN npm install --prefer-offline --no-audit
 
 COPY . .
 
@@ -12,3 +12,4 @@ COPY . .
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
+#CMD ["tail", "-f", "/dev/null"]
